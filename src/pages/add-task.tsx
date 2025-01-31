@@ -5,6 +5,7 @@ import TaskForm from "../components/task-form"
 
 const AddTask = () => {
     const [taskName, setTaskName] = useState<string>("")
+    const [taskType, setTaskType] =useState<string>("")
     const navigate = useNavigate()
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -13,7 +14,8 @@ const AddTask = () => {
         const newTask: TaskType = {
             id: Date.now().toString(),
             name: taskName,
-            status: "pending"
+            status: "pending",
+            type: taskType
         }
 
         const savedTasks = JSON.parse(
@@ -28,6 +30,8 @@ const AddTask = () => {
         <div>
             <h2 className="text-2xl font-bold mb-4">Add New Task</h2>
             <TaskForm
+                taskType={taskType}
+                setTaskType={setTaskType}
                 taskName={taskName}
                 setTaskName={setTaskName}
                 handleSubmit={handleSubmit}

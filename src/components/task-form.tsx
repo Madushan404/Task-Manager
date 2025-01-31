@@ -13,18 +13,18 @@ import {
 } from "@/components/ui/select"
 
 
-import { BellRing, Check } from "lucide-react"
+import {  Check } from "lucide-react"
  
-import { cn } from "@/lib/utils"
+
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
+  
 } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+
 
 
 
@@ -48,17 +48,23 @@ const notifications = [
 interface TaskFormProps {
     taskName: string
     setTaskName: React.Dispatch<React.SetStateAction<string>>
+    setTaskType: React.Dispatch<React.SetStateAction<string>>
     handleSubmit: (e: React.FormEvent) => void
     taskToEdit?:TaskType;
+    taskToType?:TaskType;
+    taskType:string
 }
 
 
 
 const TaskForm: React.FC<TaskFormProps> = ({
     taskName,
+    taskType,
     setTaskName,
     handleSubmit,
-    taskToEdit
+    setTaskType,
+    taskToEdit,
+    taskToType
 }) => {
 
     useEffect(() => {
@@ -67,43 +73,50 @@ const TaskForm: React.FC<TaskFormProps> = ({
         }
     }, [taskToEdit, setTaskName]);
 
+    useEffect(() => {
+        if (taskToType) {
+            setTaskType(taskToType?.type); // Populate the input with the task's name when editing
+        }
+    }, [taskToEdit, setTaskName]);
+
    
 
     return (
         
+        <div  className="w-1/2 justify-center items-center mx-auto max-w-200">
         <Card>
   <CardHeader>
     <CardDescription>Add Your Task List and Priroraty</CardDescription>
   </CardHeader>
   <CardContent>
-  <form>
+  <form className="flex gap-3 " onSubmit={handleSubmit} id="taskForm">
           <div className="grid w-full items-center gap-4">
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="name">Your Task</Label>
-              <Input id="name" placeholder="Name of your Task" />
+              <Input id="name" required placeholder="Name of your Task" value={taskName} onChange={(e) => setTaskName(e.target.value)}/>
             </div>
             <div className="flex flex-col space-y-1.5">
               <Label htmlFor="framework">Priority</Label>
-              <Select>
+              <Select value={taskType} required onValueChange={setTaskType}>
                 <SelectTrigger id="framework">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent position="popper">
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="High">High</SelectItem>
+                  <SelectItem value="Medium">Medium</SelectItem>
+                  <SelectItem value="Low">Low</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
-        </form>
+    </form>
   </CardContent>
   <CardFooter>
-    <Button className="w-full mr-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-800"  > <Check />Add Task</Button>
+    <Button className="w-full mr-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-800" id="taskForm" type="submit" onClick={() => document.getElementById("taskForm")?.requestSubmit()} > <Check />Add Task</Button>
   </CardFooter>
 </Card>
 
-
+</div>
         
         
 
