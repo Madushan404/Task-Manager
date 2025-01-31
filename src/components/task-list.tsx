@@ -1,4 +1,24 @@
 import { TaskType } from "../types/task";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+
+  import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "@/components/ui/table"
+
+  import { Button } from "@/components/ui/button"
 
 interface TaskListProps {
     tasks: TaskType[];
@@ -19,12 +39,13 @@ const TaskList: React.FC<TaskListProps> = ({
                 <p>No tasks yet. Add some tasks!</p>
             ) : (
                 <div className="mx-auto bg-[#E8F9FF]">
-                    <ul>
+                    
+                    <Table>
                         {tasks.map((task) => (
-                            <li
+                            <TableRow
                                 key={task.id}
-                                className="mb-2 p-3 border-0.5 rounded shadow-md"
-                            >
+                                className="mb-2 p-3 border-0.5 rounded shadow-md" >
+                            
                                 <span
                                     className={`mr-2 ${
                                         task.status === "completed" ? "line-through" : ""
@@ -34,7 +55,7 @@ const TaskList: React.FC<TaskListProps> = ({
                                 </span>
 
                                 <div className="flex justify-end items-center gap-2">
-                                    <button
+                                    <Button
                                         className="mr-2 bg-green-500 text-white py-1 px-3 rounded"
                                         onClick={() =>
                                             updateStatus(
@@ -48,23 +69,24 @@ const TaskList: React.FC<TaskListProps> = ({
                                         {task.status === "completed"
                                             ? "Mark as Pending"
                                             : "Mark as Completed"}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         className="mr-2 bg-yellow-500 text-white py-1 px-3 rounded"
                                         onClick={() => setTaskToEdit(task)} 
                                     >
                                         Edit
-                                    </button>
-                                    <button
+                                    </Button>
+                                    
+                                    <Button
                                         className="bg-red-500 text-white py-1 px-3 rounded"
                                         onClick={() => deleteTask(task.id)}
                                     >
                                         Delete
-                                    </button>
+                                    </Button>
                                 </div>
-                            </li>
+                                </TableRow>
                         ))}
-                    </ul>
+                    </Table>
                 </div>
             )}
         </div>

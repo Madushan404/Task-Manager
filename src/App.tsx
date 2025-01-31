@@ -16,6 +16,7 @@ const App = () => {
                 <Route path="/tasks" element={<TaskListPage />} />
                 <Route path="/add-task" element={<AddTask />} />
                 <Route path="/task-page" element={<TaskPage />} />
+                
             </Route>
         )
     )

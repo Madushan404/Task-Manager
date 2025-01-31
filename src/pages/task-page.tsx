@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
-import TaskList from "../Components/task-list";
-import { TaskType } from "../Types/task";
+import TaskList from "../components/task-list";
+import { TaskType } from "../types/task";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
 
 const TaskPage = () => {
     const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -45,8 +53,10 @@ const TaskPage = () => {
     return (
         <div>
             <h2 className="text-2xl font-bold mb-4">Task List</h2>
+         
 
             {taskToEdit && (
+                
                 <form onSubmit={handleEditTask} className="mb-4">
                     <input
                         type="text"
@@ -66,6 +76,7 @@ const TaskPage = () => {
                         Cancel
                     </button>
                 </form>
+                
             )}
 
             <TaskList
