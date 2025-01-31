@@ -25,7 +25,7 @@ const AddTask = () => {
     }
 
     return (
-        <div className="w-1/2 mx-auto bg-[#E8F9FF] p-4 rounded-lg shadow-md">
+        <div>
             <h2 className="text-2xl font-bold mb-4">Add New Task</h2>
             <TaskForm
                 taskName={taskName}

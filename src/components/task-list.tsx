@@ -56,7 +56,7 @@ const TaskList: React.FC<TaskListProps> = ({
 
                                 <div className="flex justify-end items-center gap-2">
                                     <Button
-                                        className="mr-2 bg-green-500 text-white py-1 px-3 rounded"
+                                        className="mr-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-800" 
                                         onClick={() =>
                                             updateStatus(
                                                 task.id,
@@ -71,14 +71,14 @@ const TaskList: React.FC<TaskListProps> = ({
                                             : "Mark as Completed"}
                                     </Button>
                                     <Button
-                                        className="mr-2 bg-yellow-500 text-white py-1 px-3 rounded"
+                                        className="mr-2 bg-yellow-500 text-white py-1 px-3 rounded hover:bg-yellow-700"
                                         onClick={() => setTaskToEdit(task)} 
                                     >
                                         Edit
                                     </Button>
                                     
                                     <Button
-                                        className="bg-red-500 text-white py-1 px-3 rounded"
+                                        className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-700"
                                         onClick={() => deleteTask(task.id)}
                                     >
                                         Delete

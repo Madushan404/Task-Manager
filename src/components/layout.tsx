@@ -1,4 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
+import { Button } from "./ui/button"
 
 const Layout = () => {
     return (
@@ -9,19 +10,17 @@ const Layout = () => {
                         Personal Task Manager
                     </h1>
                     <div className="ml-auto flex gap-4">
-                        <Link
-                            to="/add-task"
-                            className="bg-blue-500 text-white py-2 px-4 rounded"
-                        >
-                            Add Task
+                        <Button className="bg-blue-500 hover:bg-blue-700  ml-auto flex gap-4 ">
+                        <Link to="/add-task" >                                       
+                         Add Task
                         </Link>
-                   
-                        <Link
-                            to="/task-page"
-                            className="bg-blue-500 text-white py-2 px-4 rounded"
-                        >
-                            Task List
+                        </Button>
+
+                        <Button className="bg-blue-500 hover:bg-blue-700  ml-auto flex gap-4 ">
+                        <Link  to="/task-page">      
+                         Task List
                         </Link>
+                        </Button>
                     </div>
                 </div>
                 

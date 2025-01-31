@@ -1,5 +1,48 @@
 import { useEffect } from "react";
 import { TaskType } from "../types/task";
+import { Button } from "@/components/ui/button"
+import { Input } from "./ui/input";
+
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+
+import { BellRing, Check } from "lucide-react"
+ 
+import { cn } from "@/lib/utils"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
+
+
+
+const notifications = [
+    {
+      title: "Your call has been confirmed.",
+      description: "1 hour ago",
+    },
+    {
+      title: "You have a new message!",
+      description: "1 hour ago",
+    },
+    {
+      title: "Your subscription is expiring soon!",
+      description: "2 hours ago",
+    },
+  ]
+
 
 
 interface TaskFormProps {
@@ -8,6 +51,8 @@ interface TaskFormProps {
     handleSubmit: (e: React.FormEvent) => void
     taskToEdit?:TaskType;
 }
+
+
 
 const TaskForm: React.FC<TaskFormProps> = ({
     taskName,
@@ -22,23 +67,47 @@ const TaskForm: React.FC<TaskFormProps> = ({
         }
     }, [taskToEdit, setTaskName]);
 
+   
+
     return (
-        <form className="flex gap-3 " onSubmit={handleSubmit}>
-            <input
-                required
-                type="text"
-                placeholder="Enter Task Name"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                className="max-w-[610px] w-full p-2 border border-gray-300 rounded "
-            />
-            <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded ml-auto flex gap-4"
-            >
-                Add Task
-            </button>
+        
+        <Card>
+  <CardHeader>
+    <CardDescription>Add Your Task List and Priroraty</CardDescription>
+  </CardHeader>
+  <CardContent>
+  <form>
+          <div className="grid w-full items-center gap-4">
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="name">Your Task</Label>
+              <Input id="name" placeholder="Name of your Task" />
+            </div>
+            <div className="flex flex-col space-y-1.5">
+              <Label htmlFor="framework">Priority</Label>
+              <Select>
+                <SelectTrigger id="framework">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent position="popper">
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </form>
+  </CardContent>
+  <CardFooter>
+    <Button className="w-full mr-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-800"  > <Check />Add Task</Button>
+  </CardFooter>
+</Card>
+
+
+        
+        
+
+
     )
 }
 
