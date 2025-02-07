@@ -50,7 +50,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   return (
     <div className="w-3/4 justify-center items-center mx-auto">
-      <p className="text-lg font-semibold mb-4">Add Your Task List and Priority</p>
+      <p className="text-lg font-semibold mb-4" >Add Your Task List and Priority</p>
 
       <form className="flex gap-3" onSubmit={handleSubmit} id="taskForm">
         <div className="grid w-full items-center gap-4">
@@ -70,7 +70,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
           {/* Priority Dropdown */}
           <div className="flex flex-col space-y-1.5">
             <label htmlFor="priority">Priority</label>
-            <Dropdown menu={{ items, onClick: handleMenuClick }}>
+            <Dropdown  menu={{ items, onClick: handleMenuClick  }}>
               <div className="cursor-pointer p-2 border rounded flex items-center justify-between w-full">
                 <span>{taskType || "Select Priority"}</span>
                 <DownOutlined />

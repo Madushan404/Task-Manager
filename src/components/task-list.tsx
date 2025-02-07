@@ -1,5 +1,7 @@
+import { Trash,Edit } from "lucide-react";
 import { TaskType } from "../types/task";
 import { Table } from "antd";
+import { Tag } from "antd" ;
 
 interface TaskListProps {
   tasks: TaskType[];
@@ -8,8 +10,17 @@ interface TaskListProps {
   setTaskToEdit: React.Dispatch<React.SetStateAction<TaskType | null>>;
 }
 
+//tag color
+const getPriorityColor = (priority: string) => {
+    if (priority === "High") {
+        return "red";
+      } else if (priority === "Low") { 
+        return "purple";
+      } else {
+        return "gold"; 
+      }
+  };
 const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, setTaskToEdit }) => {
-
   const columns = [
     {
       key: "1",
@@ -26,11 +37,25 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, se
       key: "3",
       title: "Priority",
       dataIndex: "type",
+      render: (_: any, record: TaskType) => (
+        <Tag  color={getPriorityColor(record.type)}  style={{borderRadius:10}}>
+        <span className="uppercase " >{record.type}</span> 
+        </Tag>)
     },
     {
       key: "4",
       title: "Status",
       dataIndex: "status",
+      render: (_: any, record: TaskType) => (
+        <Tag
+        className="px-3 py-1 rounded cursor-pointer"
+        onClick={() => updateStatus(record.id, record.status === "completed" ? "pending" : "completed")}
+        color={record.status === "completed" ? "purple" : "success"} 
+        style={{ borderRadius: 10 }}
+      >
+        {record.status === "completed" ? "Completed" : "Pending"}
+      </Tag>
+      ),
     },
     {
       key: "5",
@@ -39,16 +64,16 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, se
       render: (_: any, record: TaskType) => (
         <div className="flex gap-2">
           <button
-            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-700"
-            onClick={() => setTaskToEdit(record)} 
+            className="mr-2  py-1  text-green-400 rounded"
+            onClick={() => setTaskToEdit(record)}
           >
-            Edit
+            <Edit/>
           </button>
           <button
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
-            onClick={() => deleteTask(record.id)} 
+            className="py-1  text-red-400 rounded"
+            onClick={() => deleteTask(record.id)}
           >
-            Delete
+            <Trash/>
           </button>
         </div>
       ),

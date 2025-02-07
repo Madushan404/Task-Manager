@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TaskList from "../components/task-list";
 import { TaskType } from "../types/task";
+import { Card, Input, Button } from "antd";
 
 const TaskPage = () => {
     const [tasks, setTasks] = useState<TaskType[]>([]);
@@ -48,25 +49,32 @@ const TaskPage = () => {
          
 
             {taskToEdit && (
-                <form onSubmit={handleEditTask} className="mb-4">
-                    <input
-                        type="text"
-                        value={taskName}
-                        onChange={(e) => setTaskName(e.target.value)}
-                        placeholder="Edit task..."
-                        className="border p-2 mr-2"
-                    />
-                    <button type="submit" className="bg-blue-500 text-white px-3 py-2 rounded">
-                        Update Task
-                    </button>
-                    <button
-                        type="button"
-                        className="ml-2 bg-gray-500 text-white px-3 py-2 rounded"
-                        onClick={() => setTaskToEdit(null)} 
-                    >
-                        Cancel
-                    </button>
-                </form>
+               
+                    
+                      <Card title="Edit Task" className="w-full max-w-md mx-auto shadow-md">
+                        <form onSubmit={handleEditTask} className="flex flex-col gap-4">
+                          {/* Task Name Input */}
+                          <Input 
+                            required
+                            type="text" 
+                            value={taskName} 
+                            onChange={(e) => setTaskName(e.target.value)} 
+                            placeholder="Edit Task..."                       />
+                  
+                          {/* Action Buttons */}
+                          <div className="flex justify-end gap-2">
+                            <Button color="cyan" variant="outlined"  htmlType="submit" >
+                              Update Task
+                            </Button>
+                            <Button danger onClick={() => setTaskToEdit(null)}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </form>
+                      </Card>
+                 
+                  
+                 
             )}
 
             <TaskList
