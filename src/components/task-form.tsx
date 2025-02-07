@@ -1,127 +1,96 @@
 import { useEffect } from "react";
 import { TaskType } from "../types/task";
-import { Button } from "@/components/ui/button"
-import { Input } from "./ui/input";
-
-import { Label } from "@/components/ui/label"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-
-import {  Check } from "lucide-react"
- 
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  
-} from "@/components/ui/card"
-
-
-
-
-const notifications = [
-    {
-      title: "Your call has been confirmed.",
-      description: "1 hour ago",
-    },
-    {
-      title: "You have a new message!",
-      description: "1 hour ago",
-    },
-    {
-      title: "Your subscription is expiring soon!",
-      description: "2 hours ago",
-    },
-  ]
-
-
+import { Check } from "lucide-react";
+import { Dropdown, Space } from "antd";
+import type { MenuProps } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 
 interface TaskFormProps {
-    taskName: string
-    setTaskName: React.Dispatch<React.SetStateAction<string>>
-    setTaskType: React.Dispatch<React.SetStateAction<string>>
-    handleSubmit: (e: React.FormEvent) => void
-    taskToEdit?:TaskType;
-    taskToType?:TaskType;
-    taskType:string
+  taskName: string;
+  setTaskName: React.Dispatch<React.SetStateAction<string>>;
+  setTaskType: React.Dispatch<React.SetStateAction<string>>;
+  handleSubmit: (e: React.FormEvent) => void;
+  taskToEdit?: TaskType;
+  taskToType?: TaskType;
+  taskType: string;
 }
 
-
+// Menu items for dropdown
+const items: MenuProps["items"] = [
+  { label: "High", key: "High" },
+  { label: "Medium", key: "Medium" },
+  { label: "Low", key: "Low" },
+];
 
 const TaskForm: React.FC<TaskFormProps> = ({
-    taskName,
-    taskType,
-    setTaskName,
-    handleSubmit,
-    setTaskType,
-    taskToEdit,
-    taskToType
+  taskName,
+  taskType,
+  setTaskName,
+  handleSubmit,
+  setTaskType,
+  taskToEdit,
+  taskToType,
 }) => {
+  useEffect(() => {
+    if (taskToEdit) {
+      setTaskName(taskToEdit.name); // Populate input with task name
+    }
+  }, [taskToEdit, setTaskName]);
 
-    useEffect(() => {
-        if (taskToEdit) {
-            setTaskName(taskToEdit.name); // Populate the input with the task's name when editing
-        }
-    }, [taskToEdit, setTaskName]);
+  useEffect(() => {
+    if (taskToType) {
+      setTaskType(taskToType.type); // Populate dropdown with task type
+    }
+  }, [taskToType, setTaskType]);
 
-    useEffect(() => {
-        if (taskToType) {
-            setTaskType(taskToType?.type); // Populate the input with the task's name when editing
-        }
-    }, [taskToEdit, setTaskName]);
+  // Handle dropdown item selection
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
+    setTaskType(e.key);
+  };
 
-   
+  return (
+    <div className="w-3/4 justify-center items-center mx-auto">
+      <p className="text-lg font-semibold mb-4">Add Your Task List and Priority</p>
 
-    return (
-        
-        <div  className="w-1/2 justify-center items-center mx-auto max-w-200">
-        <Card>
-  <CardHeader>
-    <CardDescription>Add Your Task List and Priroraty</CardDescription>
-  </CardHeader>
-  <CardContent>
-  <form className="flex gap-3 " onSubmit={handleSubmit} id="taskForm">
-          <div className="grid w-full items-center gap-4">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="name">Your Task</Label>
-              <Input id="name" required placeholder="Name of your Task" value={taskName} onChange={(e) => setTaskName(e.target.value)}/>
-            </div>
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor="framework">Priority</Label>
-              <Select value={taskType} required onValueChange={setTaskType}>
-                <SelectTrigger id="framework">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="High">High</SelectItem>
-                  <SelectItem value="Medium">Medium</SelectItem>
-                  <SelectItem value="Low">Low</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+      <form className="flex gap-3" onSubmit={handleSubmit} id="taskForm">
+        <div className="grid w-full items-center gap-4">
+          {/* Task Name Input */}
+          <div className="flex flex-col space-y-1.5">
+            <label htmlFor="name">Your Task</label>
+            <input
+              id="name"
+              required
+              placeholder="Name of your Task"
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              className="border p-2 rounded"
+            />
           </div>
-    </form>
-  </CardContent>
-  <CardFooter>
-    <Button className="w-full mr-2 bg-green-500 text-white py-1 px-3 rounded hover:bg-green-800" id="taskForm" type="submit" onClick={() => document.getElementById("taskForm")?.requestSubmit()} > <Check />Add Task</Button>
-  </CardFooter>
-</Card>
 
-</div>
-        
-        
+          {/* Priority Dropdown */}
+          <div className="flex flex-col space-y-1.5">
+            <label htmlFor="priority">Priority</label>
+            <Dropdown menu={{ items, onClick: handleMenuClick }}>
+              <div className="cursor-pointer p-2 border rounded flex items-center justify-between w-full">
+                <span>{taskType || "Select Priority"}</span>
+                <DownOutlined />
+              </div>
+            </Dropdown>
+          </div>
+        </div>
+      </form>
 
+      {/* Submit Button */}
+      <button
+        className="w-full mt-4 bg-green-500 text-white py-2 px-4 rounded hover:bg-green-800"
+        type="submit"
+        form="taskForm"
+      >
+        <Check className="inline-block mr-2" />
+        Add Task
+      </button>
+    </div>
+  );
+};
 
-    )
-}
-
-export default TaskForm
+export default TaskForm;

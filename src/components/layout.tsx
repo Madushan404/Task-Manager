@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router-dom"
-import { Button } from "./ui/button"
 import { List, Plus } from "lucide-react"
+import { Button }from "antd";
 
 const Layout = () => {
     return (
@@ -11,7 +11,7 @@ const Layout = () => {
                         Personal Task Manager
                     </h1>
                     <div className="ml-auto flex gap-4">
-                        <Button className="mr-2  py-1 bg-blue-500  text-white rounded  hover:bg-blue-700">
+                        <Button type="primary" className="bg-blue-700">
                         <Plus/>
                         <Link to="/add-task" > 
                                 
@@ -19,7 +19,7 @@ const Layout = () => {
                         </Link>
                         </Button>
 
-                        <Button className="mr-2  py-1 bg-blue-500  text-white rounded  hover:bg-blue-700">
+                        <Button type="primary" className="bg-blue-700">
                         <List/>
                         <Link  to="/task-page">      
                          Task List
