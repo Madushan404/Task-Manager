@@ -4,14 +4,15 @@ import { TaskType } from "../types/task";
 import { Card, Input, Button } from "antd";
 
 const TaskPage = () => {
-    const [tasks, setTasks] = useState<TaskType[]>([]);
+  const [tasks, setTasks] = useState<TaskType[]>(() => {
+    return JSON.parse(localStorage.getItem("tasks") || "[]");
+  });
     const [taskToEdit, setTaskToEdit] = useState<TaskType | null>(null); 
     const [taskName, setTaskName] = useState<string>(""); // Input for editing task
 
     useEffect(() => {
-        const savedTasks = JSON.parse(localStorage.getItem("tasks") || "[]") as TaskType[];
-        setTasks(savedTasks);
-    }, []);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }, [tasks]);
 
     // Update task status
     const updateTaskStatus = (id: string, newStatus: "completed" | "pending") => {

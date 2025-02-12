@@ -1,7 +1,14 @@
 import { Trash,Edit } from "lucide-react";
+
 import { TaskType } from "../types/task";
-import { Table } from "antd";
+import { Button, Table, Modal } from "antd";
 import { Tag } from "antd" ;
+import { Plus } from "lucide-react"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import TaskForm from "../components/task-form"
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
 
 interface TaskListProps {
   tasks: TaskType[];
@@ -19,8 +26,53 @@ const getPriorityColor = (priority: string) => {
       } else {
         return "gold"; 
       }
-  };
+};
+
+
 const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, setTaskToEdit }) => {
+
+//this is model part
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+
+  //this is add task function
+ 
+  const [taskName, setTaskName] = useState<string>("")
+    const [taskType, setTaskType] =useState<string>("")
+    const navigate = useNavigate()
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+
+        const newTask: TaskType = {
+            id: Date.now().toString(),
+            name: taskName,
+            status: "pending",
+            type: taskType
+        }
+
+        const savedTasks = JSON.parse(
+            localStorage.getItem("tasks") || "[]"
+        ) as TaskType[]
+        savedTasks.push(newTask)
+        localStorage.setItem("tasks", JSON.stringify(savedTasks))
+        navigate("/tasks")
+    }
+
+
   const columns = [
     {
       key: "1",
@@ -67,13 +119,13 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, se
             className="mr-2  py-1  text-green-400 rounded"
             onClick={() => setTaskToEdit(record)}
           >
-            <Edit/>
+            <EditOutlined></EditOutlined>
           </button>
           <button
             className="py-1  text-red-400 rounded"
             onClick={() => deleteTask(record.id)}
           >
-            <Trash/>
+             <DeleteOutlined></DeleteOutlined>
           </button>
         </div>
       ),
@@ -86,6 +138,28 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, se
         <p className="text-gray-500 text-center py-4">No tasks yet. Add some tasks!</p>
       ) : (
         <div className="overflow-x-auto">
+          <div className="flex justify-end">
+          <Button type="primary" className="bg-blue-700 " onClick={showModal}>
+              <Plus/>                
+              Add New Task           
+          </Button>
+
+
+          {/* this is model handle part*/}
+          <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Add New Task</h2>
+            <TaskForm
+                taskType={taskType}
+                setTaskType={setTaskType}
+                taskName={taskName}
+                setTaskName={setTaskName}
+                handleSubmit={handleSubmit}
+               />
+          </div>    
+          </Modal>
+
+          </div>
           <Table
             dataSource={tasks.map((task, index) => ({ ...task, key: task.id, no: index + 1 }))}
             columns={columns}
