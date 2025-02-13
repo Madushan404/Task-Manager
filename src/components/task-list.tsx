@@ -55,23 +55,25 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, se
     const navigate = useNavigate()
 
     const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-
-        const newTask: TaskType = {
-            id: Date.now().toString(),
-            name: taskName,
-            status: "pending",
-            type: taskType
-        }
-
-        const savedTasks = JSON.parse(
-            localStorage.getItem("tasks") || "[]"
-        ) as TaskType[]
-        savedTasks.push(newTask)
-        localStorage.setItem("tasks", JSON.stringify(savedTasks))
-        navigate("/tasks")
-    }
-
+      e.preventDefault();
+  
+      const newTask: TaskType = {
+          id: Date.now().toString(),
+          name: taskName,
+          status: "pending",
+          type: taskType
+      };
+  
+      const savedTasks = JSON.parse(localStorage.getItem("tasks") || "[]") as TaskType[];
+      savedTasks.push(newTask);
+      localStorage.setItem("tasks", JSON.stringify(savedTasks));
+  
+      
+      setIsModalOpen(false);
+  
+     
+      navigate(0);  
+  };
 
   const columns = [
     {
