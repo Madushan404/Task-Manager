@@ -1,174 +1,113 @@
-import { Trash,Edit } from "lucide-react";
-
+import { Trash, Edit } from "lucide-react";
 import { TaskType } from "../types/task";
-import { Button, Table, Modal } from "antd";
-import { Tag } from "antd" ;
-import { Plus } from "lucide-react"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import TaskForm from "../components/task-form"
+import { Button, Table, Modal, Drawer, Input, Tag } from "antd";
+import { Plus } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import TaskForm from "../components/task-form";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-
 
 interface TaskListProps {
   tasks: TaskType[];
   updateStatus: (id: string, newStatus: "completed" | "pending") => void;
   deleteTask: (id: string) => void;
-  setTaskToEdit: React.Dispatch<React.SetStateAction<TaskType | null>>;
+  setTasks: React.Dispatch<React.SetStateAction<TaskType[]>>;
 }
 
-//tag color
 const getPriorityColor = (priority: string) => {
-    if (priority === "High") {
-        return "red";
-      } else if (priority === "Low") { 
-        return "purple";
-      } else {
-        return "gold"; 
-      }
+  if (priority === "High") return "red";
+  if (priority === "Low") return "purple";
+  return "gold";
 };
 
-
-const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, setTaskToEdit }) => {
-
-//this is model part
-
+const TaskList: React.FC<TaskListProps> = ({ tasks, updateStatus, deleteTask, setTasks }) => {
+  const [taskToEdit, setTaskToEdit] = useState<TaskType | null>(null);
+  const [taskName, setTaskName] = useState<string>("");
+  const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskType, setTaskType] = useState<string>("");
+  const navigate = useNavigate();
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const showDrawer = (task: TaskType) => {
+    setTaskToEdit(task);
+    setTaskName(task.name);
+    setOpen(true);
   };
 
-  const handleOk = () => {
+  const onClose = () => {
+    setOpen(false);
+    setTaskToEdit(null);
+    setTaskName("");
+  };
+
+  const handleEditTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (taskToEdit) {
+      const updatedTasks = tasks.map((task) =>
+        task.id === taskToEdit.id ? { ...task, name: taskName } : task
+      );
+      setTasks(updatedTasks);
+      localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+      onClose();
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newTask: TaskType = {
+      id: Date.now().toString(),
+      name: taskName,
+      status: "pending",
+      type: taskType,
+    };
+    const savedTasks = [...tasks, newTask];
+    setTasks(savedTasks);
+    localStorage.setItem("tasks", JSON.stringify(savedTasks));
     setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-
-
-  //this is add task function
- 
-  const [taskName, setTaskName] = useState<string>("")
-    const [taskType, setTaskType] =useState<string>("")
-    const navigate = useNavigate()
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-  
-      const newTask: TaskType = {
-          id: Date.now().toString(),
-          name: taskName,
-          status: "pending",
-          type: taskType
-      };
-  
-      const savedTasks = JSON.parse(localStorage.getItem("tasks") || "[]") as TaskType[];
-      savedTasks.push(newTask);
-      localStorage.setItem("tasks", JSON.stringify(savedTasks));
-  
-      
-      setIsModalOpen(false);
-  
-     
-      navigate(0);  
+    navigate(0);
   };
 
   const columns = [
-    {
-      key: "1",
-      title: "NO",
-      dataIndex: "no",
-      render: (_: any, __: any, index: number) => index + 1, // Auto-generate row number
-    },
-    {
-      key: "2",
-      title: "Task",
-      dataIndex: "name",
-    },
-    {
-      key: "3",
-      title: "Priority",
-      dataIndex: "type",
-      render: (_: any, record: TaskType) => (
-        <Tag  color={getPriorityColor(record.type)}  style={{borderRadius:10}}>
-        <span className="uppercase " >{record.type}</span> 
-        </Tag>)
-    },
-    {
-      key: "4",
-      title: "Status",
-      dataIndex: "status",
-      render: (_: any, record: TaskType) => (
-        <Tag
-        className="px-3 py-1 rounded cursor-pointer"
-        onClick={() => updateStatus(record.id, record.status === "completed" ? "pending" : "completed")}
-        color={record.status === "completed" ? "purple" : "success"} 
-        style={{ borderRadius: 10 }}
-      >
-        {record.status === "completed" ? "Completed" : "Pending"}
-      </Tag>
-      ),
-    },
-    {
-      key: "5",
-      title: "Actions",
-      dataIndex: "actions",
-      render: (_: any, record: TaskType) => (
-        <div className="flex gap-2">
-          <button
-            className="mr-2  py-1  text-green-400 rounded"
-            onClick={() => setTaskToEdit(record)}
-          >
-            <EditOutlined></EditOutlined>
-          </button>
-          <button
-            className="py-1  text-red-400 rounded"
-            onClick={() => deleteTask(record.id)}
-          >
-             <DeleteOutlined></DeleteOutlined>
-          </button>
-        </div>
-      ),
-    },
+    { key: "1", title: "NO", dataIndex: "no", render: (_: any, __: any, index: number) => index + 1 },
+    { key: "2", title: "Task", dataIndex: "name" },
+    { key: "3", title: "Priority", dataIndex: "type", render: (_: any, record: TaskType) => <Tag color={getPriorityColor(record.type)}>{record.type}</Tag> },
+    { key: "4", title: "Status", dataIndex: "status", render: (_: any, record: TaskType) => (
+      <Tag onClick={() => updateStatus(record.id, record.status === "completed" ? "pending" : "completed")} color={record.status === "completed" ? "purple" : "success"}>{record.status === "completed" ? "Completed" : "Pending"}</Tag>
+    )},
+    { key: "5", title: "Actions", dataIndex: "actions", render: (_: any, record: TaskType) => (
+      <div className="flex gap-2">
+        <button className="mr-2 text-green-400" onClick={() => showDrawer(record)}>
+          <EditOutlined />
+        </button>
+        <button className="text-red-400" onClick={() => deleteTask(record.id)}>
+          <DeleteOutlined />
+        </button>
+      </div>
+    )},
   ];
 
   return (
     <div className="w-full p-4 bg-white shadow-md rounded-lg">
-      {tasks.length === 0 ? (
-        <p className="text-gray-500 text-center py-4">No tasks yet. Add some tasks!</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <div className="flex justify-end">
-          <Button type="primary" className="bg-blue-700 " onClick={showModal}>
-              <Plus/>                
-              Add New Task           
-          </Button>
-
-
-          {/* this is model handle part*/}
-          <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} >
-          <div>
-            <h2 className="text-2xl font-bold mb-4">Add New Task</h2>
-            <TaskForm
-                taskType={taskType}
-                setTaskType={setTaskType}
-                taskName={taskName}
-                setTaskName={setTaskName}
-                handleSubmit={handleSubmit}
-               />
-          </div>    
-          </Modal>
-
-          </div>
-          <Table
-            dataSource={tasks.map((task, index) => ({ ...task, key: task.id, no: index + 1 }))}
-            columns={columns}
-            pagination={{ pageSize: 5 }}
-          />
-        </div>
-      )}
+      <div className="flex justify-end mb-4">
+        <Button type="primary" className="bg-blue-700" onClick={() => setIsModalOpen(true)}>
+          <Plus /> Add New Task
+        </Button>
+      </div>
+      <Table dataSource={tasks.map((task, index) => ({ ...task, key: task.id, no: index + 1 }))} columns={columns} pagination={{ pageSize: 5 }} />
+      <Modal title="Add New Task" open={isModalOpen} onCancel={() => setIsModalOpen(false)} footer={null}>
+        <TaskForm taskType={taskType} setTaskType={setTaskType} taskName={taskName} setTaskName={setTaskName} handleSubmit={handleSubmit} />
+      </Modal>
+      <Drawer title="Edit Task" onClose={onClose} open={open}>
+        {taskToEdit && (
+          <form onSubmit={handleEditTask} className="flex flex-col gap-4">
+            <Input required type="text" value={taskName} onChange={(e) => setTaskName(e.target.value)} placeholder="Edit Task..." />
+            <div className="flex justify-end gap-2">
+              <Button type="primary" htmlType="submit">Update Task</Button>
+              <Button danger onClick={onClose}>Cancel</Button>
+            </div>
+          </form>
+        )}
+      </Drawer>
     </div>
   );
 };
