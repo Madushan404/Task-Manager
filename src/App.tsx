@@ -12,7 +12,7 @@ const App = () => {
     const router = createBrowserRouter(
         createRoutesFromElements(
             <Route path="/" element={<Layout />}>
-                <Route path="/" element={<TaskListPage />} />
+                <Route index element={<TaskListPage />} />
                 <Route path="/tasks" element={<TaskListPage />} />
                 <Route path="/task-page" element={<TaskPage />} />
                 
